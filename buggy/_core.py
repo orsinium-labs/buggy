@@ -32,11 +32,10 @@ def get_tracker_url(links: Dict[str, str]) -> Optional[str]:
         url = 'https://{}/{}/{}/issues/new'.format(parsed.hostname, *parts)
 
         # check that issues aren't disabled for the project
-        response = requests.head(url)
+        response = requests.head(url, allow_redirects=True)
         if response.status_code == 404:
             continue
-
-        return url
+        return response.url
 
     # try to find custom bug tracker by name
     for name, url in links.items():
