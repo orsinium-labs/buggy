@@ -1,8 +1,10 @@
+# built-in
 import sys
 import webbrowser
 from argparse import ArgumentParser
 from typing import List, NoReturn, TextIO
 
+# app
 from ._core import get_links, get_tracker_url
 
 
