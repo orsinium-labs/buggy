@@ -7,6 +7,7 @@ import requests
 
 
 URL = 'https://pypi.org/pypi/{}/json'
+KNOWN = frozenset({'github.com', 'gitlab.com', 'bitbucket.org'})
 
 
 def get_links(name: str) -> Dict[str, str]:
@@ -17,12 +18,12 @@ def get_links(name: str) -> Dict[str, str]:
 
 
 def get_tracker_url(links: Dict[str, str]) -> Optional[str]:
-    # try to find githab or gitlub url and use it as a bug tracker
+    # try to find github or gitlab url and use it as a bug tracker
     for url in links.values():
         if not url.startswith('http'):
             url = 'https://' + url
         parsed = urlparse(url)
-        if parsed.hostname not in ('github.com', 'gitlab.com', 'bitbucket.org'):
+        if parsed.hostname not in KNOWN:
             continue
 
         # build URL
@@ -35,7 +36,7 @@ def get_tracker_url(links: Dict[str, str]) -> Optional[str]:
         response = requests.head(url, allow_redirects=True)
         if response.status_code == 404:
             continue
-        return response.url
+        return url
 
     # try to find custom bug tracker by name
     for name, url in links.items():
